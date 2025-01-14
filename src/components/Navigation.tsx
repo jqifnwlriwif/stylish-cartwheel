@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { Facebook, Instagram, Menu, X, MessageCircle } from "lucide-react";
+import { Facebook, Instagram, Menu, X, MessageCircle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+
+<lov-add-dependency>framer-motion@latest</lov-add-dependency>
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const currentYear = new Date().getFullYear();
 
   const categories = [
@@ -14,6 +18,55 @@ export const Navigation = () => {
     "Promotions",
     "Perfumes",
   ];
+
+  const menuVariants = {
+    hidden: { opacity: 0, x: "100%" },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20
+      }
+    },
+    exit: { 
+      opacity: 0, 
+      x: "100%",
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20
+      }
+    }
+  };
+
+  const categoriesVariants = {
+    hidden: { height: 0, opacity: 0 },
+    visible: { 
+      height: "auto", 
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { x: -20, opacity: 0 },
+    visible: { 
+      x: 0, 
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20
+      }
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-lg border-b">
@@ -34,74 +87,110 @@ export const Navigation = () => {
         </div>
       </div>
 
-      <div
-        className={cn(
-          "fixed inset-0 bg-white/90 backdrop-blur-xl transition-transform duration-300 ease-in-out transform",
-          isOpen ? "translate-x-0" : "translate-x-full"
-        )}
-      >
-        <div className="container mx-auto px-4 py-20">
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <h2 className="text-sm font-medium text-gray-500 uppercase">Categories</h2>
-              {categories.map((category) => (
-                <a
-                  key={category}
-                  href={`#${category.toLowerCase()}`}
-                  className="block text-2xl font-medium hover:text-gray-600 transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {category}
-                </a>
-              ))}
-            </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={menuVariants}
+            className="fixed inset-0 bg-white/90 backdrop-blur-xl"
+          >
+            <div className="container mx-auto px-4 py-20">
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <button
+                    onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                    className="flex items-center justify-between w-full text-2xl font-medium hover:text-gray-600 transition-colors"
+                  >
+                    <span>Categories</span>
+                    <motion.div
+                      animate={{ rotate: isCategoriesOpen ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <ChevronDown className="w-6 h-6" />
+                    </motion.div>
+                  </button>
 
-            <div className="space-y-4">
-              <a
-                href="#about"
-                className="block text-2xl font-medium hover:text-gray-600 transition-colors"
-              >
-                Who We Are
-              </a>
-              <a
-                href="#contact"
-                className="block text-2xl font-medium hover:text-gray-600 transition-colors"
-              >
-                Contact Us
-              </a>
-            </div>
+                  <AnimatePresence>
+                    {isCategoriesOpen && (
+                      <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        exit="hidden"
+                        variants={categoriesVariants}
+                        className="overflow-hidden"
+                      >
+                        {categories.map((category) => (
+                          <motion.a
+                            key={category}
+                            variants={itemVariants}
+                            href={`#${category.toLowerCase()}`}
+                            className="block text-xl pl-4 py-2 hover:text-gray-600 transition-colors"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            {category}
+                          </motion.a>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
 
-            <div className="pt-8 border-t">
-              <div className="flex space-x-6 mb-4">
-                <a
-                  href="#instagram"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                  aria-label="Instagram"
+                <motion.div 
+                  className="space-y-4"
+                  variants={itemVariants}
                 >
-                  <Instagram className="w-6 h-6" />
-                </a>
-                <a
-                  href="#facebook"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                  aria-label="Facebook"
+                  <a
+                    href="#about"
+                    className="block text-2xl font-medium hover:text-gray-600 transition-colors"
+                  >
+                    Who We Are
+                  </a>
+                  <a
+                    href="#contact"
+                    className="block text-2xl font-medium hover:text-gray-600 transition-colors"
+                  >
+                    Contact Us
+                  </a>
+                </motion.div>
+
+                <motion.div 
+                  className="pt-8 border-t"
+                  variants={itemVariants}
                 >
-                  <Facebook className="w-6 h-6" />
-                </a>
-                <a
-                  href="#whatsapp"
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                  aria-label="WhatsApp"
-                >
-                  <MessageCircle className="w-6 h-6" />
-                </a>
+                  <div className="flex space-x-6 mb-4">
+                    <a
+                      href="#instagram"
+                      className="text-gray-600 hover:text-gray-900 transition-colors"
+                      aria-label="Instagram"
+                    >
+                      <Instagram className="w-6 h-6" />
+                    </a>
+                    <a
+                      href="#facebook"
+                      className="text-gray-600 hover:text-gray-900 transition-colors"
+                      aria-label="Facebook"
+                    >
+                      <Facebook className="w-6 h-6" />
+                    </a>
+                    <a
+                      href="#whatsapp"
+                      className="text-gray-600 hover:text-gray-900 transition-colors"
+                      aria-label="WhatsApp"
+                    >
+                      <MessageCircle className="w-6 h-6" />
+                    </a>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    © 2024-{currentYear} All rights reserved.
+                  </p>
+                </motion.div>
               </div>
-              <p className="text-sm text-gray-500">
-                © 2024-{currentYear} All rights reserved.
-              </p>
             </div>
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
