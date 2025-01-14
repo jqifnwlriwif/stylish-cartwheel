@@ -6,7 +6,7 @@ import { PromotionalProducts } from "@/components/PromotionalProducts";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProducts, type Product } from "@/services/productService";
+import { fetchProducts } from "@/services/productService";
 
 const Index = () => {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -22,7 +22,6 @@ const Index = () => {
     categoryTabsRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Filter products based on active category
   const filteredProducts = products.filter(
     (product) => activeCategory === "All" || product.category === activeCategory
   );
@@ -45,8 +44,6 @@ const Index = () => {
           />
         </div>
 
-        <PromotionalProducts />
-
         <motion.div 
           className="product-grid"
           initial={{ opacity: 0 }}
@@ -64,6 +61,10 @@ const Index = () => {
             </motion.div>
           ))}
         </motion.div>
+
+        <div className="mt-16">
+          <PromotionalProducts />
+        </div>
       </main>
     </div>
   );

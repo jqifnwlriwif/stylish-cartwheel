@@ -20,21 +20,25 @@ export const ProductCard = ({
   return (
     <motion.div
       className="group relative overflow-hidden rounded-lg transition-all duration-300 hover:shadow-xl"
-      whileHover={{ y: -5 }}
-      transition={{ type: "spring", stiffness: 300 }}
+      whileHover={{ 
+        y: -5,
+        transition: { type: "spring", stiffness: 300 }
+      }}
     >
       <div className="aspect-square overflow-hidden">
         <motion.img
           src={image}
           alt={name}
-          className="h-full w-full object-cover"
-          whileHover={{ scale: 1.1 }}
-          transition={{ type: "spring", stiffness: 300 }}
+          className="h-full w-full object-cover transition-transform duration-300"
+          whileHover={{ 
+            scale: 1.1,
+            transition: { type: "spring", stiffness: 300 }
+          }}
           loading="lazy"
         />
       </div>
       <motion.div
-        className="glass-card absolute inset-x-0 bottom-0 p-4"
+        className="glass-card absolute inset-x-0 bottom-0 p-4 transform transition-all duration-300 group-hover:bg-opacity-90"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 300 }}
