@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Navigation } from "@/components/Navigation";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { ProductCard } from "@/components/ProductCard";
+import { PromotionalProducts } from "@/components/PromotionalProducts";
+import { motion } from "framer-motion";
 
-// This would come from your API
 const MOCK_PRODUCTS = [
   {
     id: 1,
@@ -49,15 +50,12 @@ const MOCK_PRODUCTS = [
 
 const Index = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const categoryTabsRef = useRef<HTMLDivElement>(null);
 
-  const categories = [
-    "All",
-    "Clothing",
-    "Glasses",
-    "Speakers",
-    "Promotions",
-    "Perfumes",
-  ];
+  const scrollToCategory = (category: string) => {
+    setActiveCategory(category);
+    categoryTabsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   // Filter products based on active category
   const filteredProducts = MOCK_PRODUCTS.filter(
@@ -66,39 +64,43 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
+      <Navigation onCategoryClick={scrollToCategory} />
       
       <main className="container mx-auto px-4 pt-24 pb-16">
-        <div className="mb-8">
+        <div className="mb-8" ref={categoryTabsRef}>
           <CategoryTabs
-            categories={categories}
+            categories={["All", "Clothing", "Glasses", "Speakers", "Promotions", "Perfumes"]}
             activeCategory={activeCategory}
             onCategoryChange={setActiveCategory}
           />
         </div>
 
-        <div className="product-grid">
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              image={product.image}
-              name={product.name}
-              type={product.type}
-              price={product.price}
-              primaryColor={product.primaryColor}
-              secondaryColor={product.secondaryColor}
-            />
-          ))}
-        </div>
+        <PromotionalProducts />
 
-        {/* API Integration Point */}
-        {/* 
-        // Example of how to integrate with an API:
-        const { data: products, isLoading } = useQuery({
-          queryKey: ['products', activeCategory],
-          queryFn: () => fetchProducts(activeCategory)
-        });
-        */}
+        <motion.div 
+          className="product-grid"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {filteredProducts.map((product) => (
+            <motion.div
+              key={product.id}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <ProductCard
+                image={product.image}
+                name={product.name}
+                type={product.type}
+                price={product.price}
+                primaryColor={product.primaryColor}
+                secondaryColor={product.secondaryColor}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
       </main>
     </div>
   );

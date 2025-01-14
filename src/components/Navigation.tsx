@@ -3,7 +3,11 @@ import { Facebook, Instagram, Menu, X, MessageCircle, ChevronDown } from "lucide
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
-export const Navigation = () => {
+interface NavigationProps {
+  onCategoryClick: (category: string) => void;
+}
+
+export const Navigation = ({ onCategoryClick }: NavigationProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const currentYear = new Date().getFullYear();
@@ -16,6 +20,11 @@ export const Navigation = () => {
     "Promotions",
     "Perfumes",
   ];
+
+  const handleCategoryClick = (category: string) => {
+    onCategoryClick(category);
+    setIsOpen(false);
+  };
 
   const menuVariants = {
     hidden: { opacity: 0, x: "100%" },
@@ -120,15 +129,14 @@ export const Navigation = () => {
                         className="overflow-hidden"
                       >
                         {categories.map((category) => (
-                          <motion.a
+                          <motion.button
                             key={category}
                             variants={itemVariants}
-                            href={`#${category.toLowerCase()}`}
-                            className="block text-xl pl-4 py-2 hover:text-gray-600 transition-colors"
-                            onClick={() => setIsOpen(false)}
+                            className="block w-full text-left text-xl pl-4 py-2 hover:text-gray-600 transition-colors"
+                            onClick={() => handleCategoryClick(category)}
                           >
                             {category}
-                          </motion.a>
+                          </motion.button>
                         ))}
                       </motion.div>
                     )}
