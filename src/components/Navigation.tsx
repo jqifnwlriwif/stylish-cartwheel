@@ -3,8 +3,6 @@ import { Facebook, Instagram, Menu, X, MessageCircle, ChevronDown } from "lucide
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
-<lov-add-dependency>framer-motion@latest</lov-add-dependency>
-
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
